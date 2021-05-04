@@ -15,4 +15,8 @@ iterator
 -
 cmath
 -
+random
+-
+stdio.h
+-
 
