@@ -312,17 +312,27 @@ int main() {
 //    cout << "  Max: " <<  maxval << "  Min: " << minval ;
 
     int n = 10;
-
-
-
     std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
     printVector(arr);
     std::vector<int> ar =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);//Note that the address is passed here because the outside value needs to be changed through the function
-    cout << "  Maxa: " <<  arr.at(1) ;
-
-    cout << "  Max: " <<  ar[0] << "  Min: " << ar[1] ;
 
 
+    int p_max;
+    int p_min;
+    for (int i=0; i < arr.size(); i++){
+        if(arr[i]==ar[0]){
+            p_max=i;
+        }
+        if(arr[i]== ar[1]){
+            p_min=i;
+
+        }
+    }
+    cout << "Max: " <<  ar[0] ;
+    cout << " Elem max : " << p_max << endl;
+
+    cout << "Min: " << ar[1]  ;
+    cout << " Elem min : " << p_min << endl;
     //666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     //----------------------------------------------- quickSort  -------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
