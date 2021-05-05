@@ -76,65 +76,44 @@ void printArray(int A[], int n) {
         cout << A[i] << " ";
     cout << "\n";
 }
-
 template<class T>
-int posicaoMaioreMenorElemento(std::vector<T> &arr, int begin, int end, int max, int min) {
-    int max1  , min1 ;
-    if (begin == end) {
-        min = arr[begin];
-        max = arr[begin];
-        max1 =arr[begin];
-        min1 =arr[begin];
+std::vector<T>  posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r){
+    T max;
+    T min;
+    if (l == r ) {
+        max = arr[l];
+        min = arr[l];
     }
-    else if( (begin == end - 1)) {
-        if(arr[begin] < arr[end] ){
-            max=arr[end];
-            min=arr[begin];
-        } else{
-            max=arr[begin];
-            min=arr[end];
+    else if (l + 1 == r )
+    {
+        if (arr[l] < arr[r] )
+        {
+            max = arr[r];
+            min = arr[l];
         }
-    } else{
-        int m= (begin + end)/2;
-        posicaoMaioreMenorElemento(arr,begin,m, max1,min1);
-        posicaoMaioreMenorElemento(arr,m+1,end, max,min);
-        if(max1 < max){
-            max=max1;
+        else
+        {
+            max = arr[l];
+            min = arr[r];
         }
-        if(min1 > min){
-            min=min1;
-        }
-        cout << "Max: " << max << " Min: " << min << endl;
     }
-
-//    int max1, min1;
-//    if (begin == end) {
-//        min = arr[begin];
-//        max = arr[begin];
-//        max1 = arr[begin];
-//        min1 = arr[begin];
-//    } else if ((end - begin) == 1) {
-//        if (arr[begin] <= arr[end]) {
-//            min = arr[end];
-//            max = arr[end];
-//        } else {
-//            min = arr[end];
-//            max = arr[begin];
-//        }
-//    } else if ((end - begin) > 1) {
-//        int m = (begin + end) / 2;
-//        posicaoMaioreMenorElemento(arr, 0, m, max, min);
-//        posicaoMaioreMenorElemento(arr, m + 1, end, max1, min1);
-//        if (max1 > max) {
-//            max = max1;
-//        }
-//        if (min1 < min) {
-//            min = min1;
-//        }
-//        cout << "max: " << max << "   Min " << min << endl;
-//    }
+    else
+    {
+        int m = (l + r ) / 2;
+        std::vector<T>  left = posicaoMaioreMenorElemento(arr, l, m);
+        std::vector<T>  right = posicaoMaioreMenorElemento(arr, m + 1, r);
+        if ( left[0] > right[0] )
+            max = left[0];
+        else
+            max = right[0];
+        if ( left[1] < right[1] )
+            min = left[1];
+        else
+            min = right[1];
+    }
+    std::vector<int>  ans  = {max, min};
+    return ans;
 }
-
 template<class T>
 int posicaoMaiorElemento(std::vector<T> &arr, int begin, int end) {
     if (begin == end) {
@@ -324,19 +303,24 @@ int main() {
 
 //    int n = 10;
 //
-//    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};//inicializaVectorRandom(n); // O(n)
 //
-////    arr.push_back(984);
-////    arr.push_back(984);
-////    arr.push_back(984);
-//
-//    cout << "Tamanho do Vetor: " << arr.size() << endl;
-//    cout << "O array: " << endl;
-//
+//    int minval, maxval = 0;
+//    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
 //    printVector(arr);
+//    posicaoMaioreMenorElemento(arr, 0, arr.size()-1, &minval, &maxval);//Note that the address is passed here because the outside value needs to be changed through the function
 //
-//
-//    posicaoMaioreMenorElemento(arr, 0, arr.size() , 0, 0);
+//    cout << "  Max: " <<  maxval << "  Min: " << minval ;
+
+    int n = 10;
+
+
+
+    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
+    printVector(arr);
+    std::vector<int> ar =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);//Note that the address is passed here because the outside value needs to be changed through the function
+    cout << "  Maxa: " <<  arr.at(1) ;
+
+    cout << "  Max: " <<  ar[0] << "  Min: " << ar[1] ;
 
 
     //666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
@@ -344,18 +328,18 @@ int main() {
     //------------------------------------------------------------------------------------------------------------------
 
 
-    int n = 20;
-    cout << "Tamanho do Vetor: " << n << endl;
-    std::vector<int> arr = inicializaVectorRandom(n); // O(n)
-
-    cout << "O array: \n";
-    printVector(arr);
-
-
-    quickSort(arr, 0, arr.size() - 1);
-
-    cout << "Array ordenado: \n";
-    printVector(arr);
+//    int n = 20;
+//    cout << "Tamanho do Vetor: " << n << endl;
+//    std::vector<int> arr = inicializaVectorRandom(n); // O(n)
+//
+//    cout << "O array: \n";
+//    printVector(arr);
+//
+//
+//    quickSort(arr, 0, arr.size() - 1);
+//
+//    cout << "Array ordenado: \n";
+//    printVector(arr);
 
 
     return 0;
