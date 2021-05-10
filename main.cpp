@@ -3,42 +3,136 @@
 #include <iterator>
 #include <cmath>
 #include <random>
+#include<stdio.h>
 
 using namespace std;
 
-/* C implementation QuickSort */
-#include<stdio.h>
+class node {
+public:
+    char elemnto;
+    node *left;
+    node *right;
+};
+/*
+  A busca começa examinando o nó raiz. Se a árvore está vazia, o valor procurado não pode existir na árvore.
+  Caso contrário, se o valor é igual a raiz, a busca foi bem sucedida.
+  Se o valor é menor do que a raiz, a busca segue pela subárvore esquerda, se não, pela direita.
 
-// A utility function to swap two elements
-void swap(int* a, int* b)
-{
-    int t = *a;
-    *a = *b;
-    *b = t;
+  Esse processo é repetido até o valor ser encontrado ou a subárvore ser nula (vazia).
+  Se o valor não for encontrado até a busca chegar na subárvore nula, então o valor não deve estar presente na árvore.
+ */
+//caso médio: O(log n)	 pior caso: O(n).
+
+node *busca(node *t, char x) {
+    if (t == NULL)
+        return NULL;
+    else if (x < t->elemnto)
+        return busca(t->left, x);
+    else if (x > t->elemnto)
+        return busca(t->right, x);
+    else
+        return t;
+
 }
+
+// No percurso da pré-ordem, a raiz é visitada antes que as subárvores esquerda e direita sejam visitadas (nessa ordem).
+void preorder(node *node) {
+    if (node == NULL)
+        return;
+    cout << node->elemnto << " ";
+    preorder(node->left);
+    preorder(node->right);
+}
+
+/* Na travessia pós-ordem, a raiz é visitada depois de visitar as subárvores esquerda e direita (nessa ordem) */
+void postorder(node *node) {
+    if (node == NULL)
+        return;
+    postorder(node->left);
+    postorder(node->right);
+    cout << node->elemnto << " ";
+}
+
+
+//No caso de travessia em ordem, a raiz de cada subárvore é visitada depois que sua subárvore esquerda foi percorrida,
+// mas antes que a travessia de sua subárvore direita comece.
+// As etapas para percorrer uma árvore binária na travessia inorder são:
+// 1- Visite a subárvore esquerda, usando inorder.
+// 2- visitar a raiz
+// 3- Visite a subárvore certa, usando inorder.
+void inorder(node *root) {
+    if (root == NULL)
+        return;
+    else {
+        inorder(root->left);
+        cout << root->elemnto << " ";
+        inorder(root->right);
+    }
+}
+
+/* Um nó de árvore binária possui dados, ponteiro para filho esquerdo
+e um ponteiro para a criança direita */
+struct Node {
+    int data;
+    struct Node *left, *right;
+
+    Node(int data) {
+        this->data = data;
+        left = right = NULL;
+    }
+};
+
+
+
+//Inserção		caso médio: O(log n)	 pior caso: O(n)
+// A função recebe uma árvore de busca r
+// e uma folha avulsa novo e insere a folha
+// na árvore de modo que a árvore continue
+// sendo de busca. A função devolve a raiz
+// da árvore resultante.
+
+node *insert(char elemento, node *t) {
+    if (t == NULL) // se a arvore é vazia
+    {
+        t = new node; // cria um nó e insere. se não
+        t->elemnto = elemento;
+        t->left = t->right = NULL;
+    } else if (elemento < t->elemnto) // faz as comparações
+        t->left = insert(elemento, t->left);
+    else if (elemento > t->elemnto)
+        t->right = insert(elemento, t->right);
+    return t;
+}
+
+//calcula a altura da arvore
+int height(node *node) {
+    if (node == NULL)
+        return -1;
+    else
+        return max(height(node->left), height(node->right)) + 1;
+}
+
 
 /* Esta função pega o último elemento como pivô, coloca
     o elemento pivô em sua posição correta na classificação
      array, e coloca todos menores (menores que pivô)
     à esquerda do pivô e todos os elementos maiores à direita
-    de pivô */
+    de pivô
+    https://www.geeksforgeeks.org/quick-sort/*/
 template<class T>
-int partition (std::vector<T> &arr, int low, int high)
-{
+int partition(std::vector<T> &arr, int low, int high) {
     int pivot = arr[high];    // pivot
     int i = (low - 1);  // Index of smaller element
 
-    for (int j = low; j <= high- 1; j++)
-    {
+    for (int j = low; j <= high - 1; j++) {
         // If current element is smaller than or
         // equal to pivot
-        if (arr[j] <= pivot)
-        {
+        if (arr[j] <= pivot) {
             i++;    // increment index of smaller element
-            swap(&arr[i], &arr[j]);
+            std::swap(arr[i], arr[j]);
         }
     }
-    swap(&arr[i + 1], &arr[high]);
+    std::swap(arr[i + 1], arr[high]);
     return (i + 1);
 }
 
@@ -56,10 +150,8 @@ int partition (std::vector<T> &arr, int low, int high)
 -Desvantagens: como escolher o pivô?
 */
 template<class T>
-void quickSort(std::vector<T> &arr, int low, int high)
-{
-    if (low < high)
-    {
+void quickSort(std::vector<T> &arr, int low, int high) {
+    if (low < high) {
         /* pi é o índice de particionamento, arr[p] agora é    no lugar certo */
         int pi = partition(arr, low, high);
 
@@ -76,44 +168,39 @@ void printArray(int A[], int n) {
         cout << A[i] << " ";
     cout << "\n";
 }
+
 template<class T>
-std::vector<T>  posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r){
+std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
     T max;
     T min;
-    if (l == r ) {
+    if (l == r) {
         max = arr[l];
         min = arr[l];
-    }
-    else if (l + 1 == r )
-    {
-        if (arr[l] < arr[r] )
-        {
+    } else if (l + 1 == r) {
+        if (arr[l] < arr[r]) {
             max = arr[r];
             min = arr[l];
-        }
-        else
-        {
+        } else {
             max = arr[l];
             min = arr[r];
         }
-    }
-    else
-    {
-        int m = (l + r ) / 2;
-        std::vector<T>  left = posicaoMaioreMenorElemento(arr, l, m);
-        std::vector<T>  right = posicaoMaioreMenorElemento(arr, m + 1, r);
-        if ( left[0] > right[0] )
+    } else {
+        int m = (l + r) / 2;
+        std::vector<T> left = posicaoMaioreMenorElemento(arr, l, m);
+        std::vector<T> right = posicaoMaioreMenorElemento(arr, m + 1, r);
+        if (left[0] > right[0])
             max = left[0];
         else
             max = right[0];
-        if ( left[1] < right[1] )
+        if (left[1] < right[1])
             min = left[1];
         else
             min = right[1];
     }
-    std::vector<int>  ans  = {max, min};
+    std::vector<int> ans = {max, min};
     return ans;
 }
+
 template<class T>
 int posicaoMaiorElemento(std::vector<T> &arr, int begin, int end) {
     if (begin == end) {
@@ -209,8 +296,6 @@ void printVector(std::vector<T> &v) {
     }
     std::cout << endl;
 }
-
-
 
 
 std::vector<int> inicializaVector(int n) {
@@ -311,28 +396,29 @@ int main() {
 //
 //    cout << "  Max: " <<  maxval << "  Min: " << minval ;
 
-    int n = 10;
-    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
-    printVector(arr);
-    std::vector<int> ar =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);//Note that the address is passed here because the outside value needs to be changed through the function
-
-
-    int p_max;
-    int p_min;
-    for (int i=0; i < arr.size(); i++){
-        if(arr[i]==ar[0]){
-            p_max=i;
-        }
-        if(arr[i]== ar[1]){
-            p_min=i;
-
-        }
-    }
-    cout << "Max: " <<  ar[0] ;
-    cout << " Elem max : " << p_max << endl;
-
-    cout << "Min: " << ar[1]  ;
-    cout << " Elem min : " << p_min << endl;
+//https://www.programmersought.com/article/59775787376/
+//    int n = 10;
+//    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
+//    printVector(arr);
+//    std::vector<int> ar =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);//Note that the address is passed here because the outside value needs to be changed through the function
+//
+//
+//    int p_max;
+//    int p_min;
+//    for (int i=0; i < arr.size(); i++){
+//        if(arr[i]==ar[0]){
+//            p_max=i;
+//        }
+//        if(arr[i]== ar[1]){
+//            p_min=i;
+//
+//        }
+//    }
+//    cout << "Max: " <<  ar[0] ;
+//    cout << " Elem max : " << p_max << endl;
+//
+//    cout << "Min: " << ar[1]  ;
+//    cout << " Elem min : " << p_min << endl;
     //666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     //----------------------------------------------- quickSort  -------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
@@ -351,6 +437,117 @@ int main() {
 //    cout << "Array ordenado: \n";
 //    printVector(arr);
 
+    //999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+    //----------------------------------------------------  BST  -------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+//    node *root = NULL;
+//    cout << "Inserção: " << endl;
+//
+//    root = insert(6, root);
+//    cout << 6 <<  " ";
+//    insert(3, root);
+//    cout <<  3 <<  " ";
+//    insert(30, root);
+//    cout << 30 <<  " ";
+//    insert(7, root);
+//    cout << 7 <<  " ";
+//    insert(1, root);
+//    cout << 1  <<  " ";
+//    insert(5, root);
+//    cout << 5 <<  " ";
+//    insert(2, root);
+//    cout << 2 <<  " ";
+//    insert(20, root);
+//    cout << 20 <<  " ";
+//    insert(40, root);
+//    cout <<  40 <<  " ";
+//    insert(70, root);
+//    cout << 70 <<  " ";
+//    insert(60, root);
+//    cout <<  60 <<  " ";
+//    insert(80, root);
+//    cout << 80 <<  endl;
 
-    return 0;
+//    cout << "Árvore " << endl;
+//    inorder(root);
+//    cout << endl;
+//
+//    cout << "Busca: " ;
+//    root = busca(root, 30);
+//    cout << root->elemnto;
+
+    //10-----------------------------------------------------------------10---------------------------------------------
+    //----------------------------------------------------  BST - height------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+//    node *root = NULL;
+//    cout << "Inserção: " << endl;
+//
+//    root = insert(6, root);
+//    cout << 6 <<  " ";
+//    insert(3, root);
+//    cout <<  3 <<  " ";
+//    insert(30, root);
+//    cout << 30 <<  " ";
+//    insert(7, root);
+//    cout << 7 <<  " ";
+//    insert(1, root);
+//    cout << 1  <<  " ";
+//    insert(5, root);
+//    cout << 5 <<  " ";
+//    insert(2, root);
+//    cout << 2 <<  " ";
+//    insert(20, root);
+//    cout << 20 <<  " ";
+//    insert(40, root);
+//    cout <<  40 <<  " ";
+//    insert(70, root);
+//    cout << 70 <<  " ";
+//    insert(60, root);
+//    cout <<  60 <<  " ";
+//    insert(80, root);
+//    cout << 80 <<  endl;
+
+//    cout << "Árvore " << endl;
+//    inorder(root);
+//    cout << endl;
+
+//    cout << "Busca: " ;
+//    root = busca(root, 30);
+//    cout << root->elemnto;
+
+    //   cout << endl << "Altura da árvore :" << height(root) << endl;
+
+    //12-----------------------------------------------------------------12---------------------------------------------
+    //----------------------------------------------------  BST - Caminhos------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+    node *root = NULL;
+    cout << "Árvore " << endl;
+//d, g, b, e, a, f, c
+    root = insert('d', root);
+    cout << 'd' << " ";
+    insert('g', root);
+    cout << 'g' << " ";
+    insert('b', root);
+    cout << 'b' << " ";
+    insert('a', root);
+    cout << 'a' << " ";
+    insert('f', root);
+    cout << 'f' << " ";
+    insert('c', root);
+    cout << 'c' << " ";
+    insert('g', root);
+    cout << 'g' << endl;
+
+
+    cout << "inorder: ";
+    inorder(root);//d, g, b, e, a, f, c
+
+    cout << "\nPreorder: "; //a, b, d, g, e, c, f
+    preorder(root);
+
+    cout << "\nPostorder: ";
+    postorder(root); //g, d, e, b, f, c, a
+
+    cout << " Falta fazer o 11: ";
+
 }
