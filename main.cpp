@@ -7,11 +7,20 @@
 
 using namespace std;
 
+//utilizada para int
 class node {
 public:
-    char elemnto;
+    int elemnto;
     node *left;
     node *right;
+};
+
+// utilizada para strings
+class Tree {
+public:
+    string elemnto;
+    Tree *left;
+    Tree *right;
 };
 /*
   A busca começa examinando o nó raiz. Se a árvore está vazia, o valor procurado não pode existir na árvore.
@@ -23,7 +32,7 @@ public:
  */
 //caso médio: O(log n)	 pior caso: O(n).
 
-node *busca(node *t, char x) {
+node *busca(node *t, int x) {
     if (t == NULL)
         return NULL;
     else if (x < t->elemnto)
@@ -36,7 +45,7 @@ node *busca(node *t, char x) {
 }
 
 // No percurso da pré-ordem, a raiz é visitada antes que as subárvores esquerda e direita sejam visitadas (nessa ordem).
-void preorder(node *node) {
+void preorder(Tree *node) {
     if (node == NULL)
         return;
     cout << node->elemnto << " ";
@@ -45,7 +54,7 @@ void preorder(node *node) {
 }
 
 /* Na travessia pós-ordem, a raiz é visitada depois de visitar as subárvores esquerda e direita (nessa ordem) */
-void postorder(node *node) {
+void postorder(Tree *node) {
     if (node == NULL)
         return;
     postorder(node->left);
@@ -60,7 +69,7 @@ void postorder(node *node) {
 // 1- Visite a subárvore esquerda, usando inorder.
 // 2- visitar a raiz
 // 3- Visite a subárvore certa, usando inorder.
-void inorder(node *root) {
+void inorder(Tree *root) {
     if (root == NULL)
         return;
     else {
@@ -72,15 +81,15 @@ void inorder(node *root) {
 
 /* Um nó de árvore binária possui dados, ponteiro para filho esquerdo
 e um ponteiro para a criança direita */
-struct Node {
-    int data;
-    struct Node *left, *right;
-
-    Node(int data) {
-        this->data = data;
-        left = right = NULL;
-    }
-};
+//struct Node {
+//    int data;
+//    struct Node *left, *right;
+//
+//    Node(int data) {
+//        this->data = data;
+//        left = right = NULL;
+//    }
+//};
 
 
 
@@ -91,7 +100,7 @@ struct Node {
 // sendo de busca. A função devolve a raiz
 // da árvore resultante.
 
-node *insert(char elemento, node *t) {
+node *insert(int elemento, node *t) {
     if (t == NULL) // se a arvore é vazia
     {
         t = new node; // cria um nó e insere. se não
@@ -103,6 +112,21 @@ node *insert(char elemento, node *t) {
         t->right = insert(elemento, t->right);
     return t;
 }
+
+Tree *insertString(string elemento, Tree *t) {
+    if (t == NULL) // se a arvore é vazia
+    {
+        t = new Tree; // cria um nó e insere. se não
+        t->elemnto = elemento;
+        t->left = t->right = NULL;
+    } else if (elemento < t->elemnto) // faz as comparações
+        t->left = insertString(elemento, t->left);
+    else if (elemento > t->elemnto)
+        t->right = insertString(elemento, t->right);
+    return t;
+}
+
+
 
 //calcula a altura da arvore
 int height(node *node) {
@@ -163,11 +187,16 @@ void quickSort(std::vector<T> &arr, int low, int high) {
 }
 
 
-void printArray(int A[], int n) {
-    for (int i = 0; i < n; i++)
-        cout << A[i] << " ";
-    cout << "\n";
-}
+//void printArray(int A[][n], int n) {
+//    printf("\nMatriz gerada\n");
+//    for(int i=0;i<n;i++)
+//    {
+//        for(int j=0;j<n;j++)
+//        {
+//            printf("%d\t", A[i][j]);
+//        }
+//    }
+//}
 
 template<class T>
 std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
@@ -319,6 +348,132 @@ std::vector<int> inicializaVectorRandom(int t) {
     return nums;
 }
 
+const int N = 2;
+
+
+double insert() {
+    unsigned seed = time(0);
+    srand(seed);
+    double x[N][N];
+    double val;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            val = 1 + rand() % 100;
+            x[i][j] = val;
+        }
+    }
+    cout << "\nMatriz gerada\n";
+    for (int linha = 0; linha < N; linha++) {
+        for (int coluna = 0; coluna < N; coluna++) {
+            cout << x[linha][coluna] << " ";
+        }
+        cout << "\n";
+    }
+}
+
+double m1(double a[N][N], double b[N][N]) {
+    double o = (a[0][0] + a[1][1]) * (b[0][0] + b[1][1]);
+//    cout << o << " ";
+    return o;
+}
+
+double m2(double a[N][N], double b[N][N]) {
+    double o = ((a[1][0] + a[1][1]) * b[0][0]);
+    //  cout << o << " ";
+    return o;
+
+}
+
+double m3(double a[N][N], double b[N][N]) {
+    double o = (a[0][0] * (b[0][1] - b[1][1]));
+//    cout << o << " ";
+    return o;
+}
+
+int m4(double a[N][N], double b[N][N]) {
+    double o = (a[1][1] * (b[1][0] - b[0][0]));
+    //  cout << o << " ";
+    return o;
+}
+
+double m5(double a[N][N], double b[N][N]) {
+    double o = ((a[0][0] + a[0][1]) * b[1][1]);
+    //   cout << o << " ";
+    return o;
+}
+
+double m6(double a[N][N], double b[N][N]) {
+    double o = ((a[1][0] - a[0][0]) * (b[0][0] + b[0][1]));
+    //  cout << o << " ";
+    return o;
+}
+
+double m7(double a[N][N], double b[N][N]) {
+    double o = ((a[0][1] - a[1][1]) * (b[1][0] + b[1][1]));
+    //  cout << o << " ";
+    return o;
+}
+
+
+void printmatriz(vector<vector<int>> &permutacao) {
+    for (std::vector<int> p: permutacao) {
+        for (int el: p) {
+            std::cout << el << endl;
+        }
+
+    }
+}
+
+void strassen() {
+    double a00, a10, a11, a01, a[N][N], b[N][N];
+    cout << "Exibindo o conteúdo da matriz declarada e inicializada:" << endl;
+    cout << "Matriz A: ";
+    unsigned seed = time(0);
+    srand(seed);
+
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            a[i][j] = 1 + rand() % 100;;
+        }
+    }
+
+    cout << "\n";
+    for (int linha = 0; linha < N; linha++) {
+        for (int coluna = 0; coluna < N; coluna++) {
+            cout << a[linha][coluna] << " ";
+        }
+        cout << "\n";
+    }
+
+    cout << "\n Matriz B: ";
+    seed = time(0);
+    srand(seed);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            b[i][j] = 10 + rand() % 100;
+        }
+    }
+    cout << " \n";
+    for (int linha = 0; linha < N; linha++) {
+        for (int coluna = 0; coluna < N; coluna++) {
+            cout << b[linha][coluna] << " ";
+        }
+        cout << "\n";
+    };
+
+
+    a00 = m1(a, b) + m4(a, b) - m5(a, b) + m7(a, b);
+    a10 = m2(a, b) + m4(a, b);
+    a01 = m3(a, b) + m5(a, b);
+    a11 = m1(a, b) + m3(a, b) - m2(a, b) + m6(a, b);
+    cout << "\n";
+
+    cout << "Matriz Final";
+    cout << "\n" << a00 << " " << a01;
+    cout << "\n" << a10 << " " << a11;
+}
 
 int main() {
     ///11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -441,35 +596,16 @@ int main() {
     //----------------------------------------------------  BST  -------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 //    node *root = NULL;
+//    int v[]={6,2,3,4,5,6,7,8,30,1};
 //    cout << "Inserção: " << endl;
+//    for(int a :v){
+//        root = insert(a, root);
+//        cout << a <<  " ";
+//    }
+//    cout << endl;
 //
-//    root = insert(6, root);
-//    cout << 6 <<  " ";
-//    insert(3, root);
-//    cout <<  3 <<  " ";
-//    insert(30, root);
-//    cout << 30 <<  " ";
-//    insert(7, root);
-//    cout << 7 <<  " ";
-//    insert(1, root);
-//    cout << 1  <<  " ";
-//    insert(5, root);
-//    cout << 5 <<  " ";
-//    insert(2, root);
-//    cout << 2 <<  " ";
-//    insert(20, root);
-//    cout << 20 <<  " ";
-//    insert(40, root);
-//    cout <<  40 <<  " ";
-//    insert(70, root);
-//    cout << 70 <<  " ";
-//    insert(60, root);
-//    cout <<  60 <<  " ";
-//    insert(80, root);
-//    cout << 80 <<  endl;
-
-//    cout << "Árvore " << endl;
-//    inorder(root);
+//    cout << "Árvore inorder" << endl;
+//    inorder( root);
 //    cout << endl;
 //
 //    cout << "Busca: " ;
@@ -479,76 +615,53 @@ int main() {
     //10-----------------------------------------------------------------10---------------------------------------------
     //----------------------------------------------------  BST - height------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
+
+   // Implemente um algoritmo recursivo que encontre o tamanho de uma  ́arvore bin ́aria.
+
 //    node *root = NULL;
 //    cout << "Inserção: " << endl;
-//
-//    root = insert(6, root);
-//    cout << 6 <<  " ";
-//    insert(3, root);
-//    cout <<  3 <<  " ";
-//    insert(30, root);
-//    cout << 30 <<  " ";
-//    insert(7, root);
-//    cout << 7 <<  " ";
-//    insert(1, root);
-//    cout << 1  <<  " ";
-//    insert(5, root);
-//    cout << 5 <<  " ";
-//    insert(2, root);
-//    cout << 2 <<  " ";
-//    insert(20, root);
-//    cout << 20 <<  " ";
-//    insert(40, root);
-//    cout <<  40 <<  " ";
-//    insert(70, root);
-//    cout << 70 <<  " ";
-//    insert(60, root);
-//    cout <<  60 <<  " ";
-//    insert(80, root);
-//    cout << 80 <<  endl;
-
-//    cout << "Árvore " << endl;
-//    inorder(root);
+//    int v[] = {6, 2, 3, 4, 5, 6, 7, 8, 30, 1};
+//    cout << "Inserção: " << endl;
+//    for (int a :v) {
+//        root = insert(a, root);
+//        cout << a << " ";
+//    }
 //    cout << endl;
+//    cout << "Árvore inorder" << endl;
+//
+//    cout << endl << "Altura da árvore :" << height(root) << endl;
 
-//    cout << "Busca: " ;
-//    root = busca(root, 30);
-//    cout << root->elemnto;
-
-    //   cout << endl << "Altura da árvore :" << height(root) << endl;
 
     //12-----------------------------------------------------------------12---------------------------------------------
     //----------------------------------------------------  BST - Caminhos------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
-    node *root = NULL;
-    cout << "Árvore " << endl;
-//d, g, b, e, a, f, c
-    root = insert('d', root);
-    cout << 'd' << " ";
-    insert('g', root);
-    cout << 'g' << " ";
-    insert('b', root);
-    cout << 'b' << " ";
-    insert('a', root);
-    cout << 'a' << " ";
-    insert('f', root);
-    cout << 'f' << " ";
-    insert('c', root);
-    cout << 'c' << " ";
-    insert('g', root);
-    cout << 'g' << endl;
+    //Implemente os caminhamentospreorder,postordereinorderpara  ́arvores bin ́arias
 
+//    Tree *root = NULL;
+//    cout << "Inserção: " << endl;
+//
+//    string v[] = {"d", "g", "b", "e", "a", "f", "c"};
+//    cout << "Inserção: " << endl;
+//    for (string a : v) {
+//        root = insertString(a, root);
+//        cout << a << " ";
+//    }
+//    cout << endl;
+//    cout << "Árvore " << endl;
+//
+//
+//    cout << "Inorder: ";
+//    inorder(root);//d, g, b, e, a, f, c
+//
+//    cout << "\nPreorder: "; //a, b, d, g, e, c, f
+//    preorder(root);
+//
+//    cout << "\nPostorder: ";
+//    postorder(root); //g, d, e, b, f, c, a
 
-    cout << "inorder: ";
-    inorder(root);//d, g, b, e, a, f, c
+    //13-----------------------------------------------------------------13---------------------------------------------
+    //----------------------------------------------------  Strassen ---------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
 
-    cout << "\nPreorder: "; //a, b, d, g, e, c, f
-    preorder(root);
-
-    cout << "\nPostorder: ";
-    postorder(root); //g, d, e, b, f, c, a
-
-    cout << " Falta fazer o 11: ";
-
-
+       strassen();
 }
