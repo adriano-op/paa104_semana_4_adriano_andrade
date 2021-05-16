@@ -198,6 +198,18 @@ void quickSort(std::vector<T> &arr, int low, int high) {
 //    }
 //}
 
+/**
+ * @see Descrição do problema:
+ *  Dado um array A[] de tamanho n, encontre os elementos máximo e mínimo presentes no array.
+ *  O algoritmo deve fazer o número mínimo de comparações.
+
+ * @tparam T
+ * @param arr
+ * @param l
+ * @param r
+ * @return
+ */
+
 template<class T>
 std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
     T max;
@@ -635,7 +647,7 @@ int main() {
     //12-----------------------------------------------------------------12---------------------------------------------
     //----------------------------------------------------  BST - Caminhos------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
-    //Implemente os caminhamentospreorder,postordereinorderpara  ́arvores bin ́arias
+    //Implemente os caminhamentos preorder,postordereinorderpara  ́arvores bin ́arias
 
 //    Tree *root = NULL;
 //    cout << "Inserção: " << endl;
