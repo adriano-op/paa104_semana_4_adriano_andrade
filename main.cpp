@@ -14,7 +14,6 @@ struct Point {
     double x, y;
 };
 
-
 #define Ponto pair<int, int>
 set<Ponto> casca;
 int orientacao(Ponto p1, Ponto p2, Ponto p) {
@@ -24,40 +23,42 @@ int orientacao(Ponto p1, Ponto p2, Ponto p) {
     else if (res > 0) { return 1; }
     else { return 2; }
 }
-
-// p1 e p2 são os pontos finais da linha
-void qHull(pair<int, int> *a, int n, Ponto p1, Ponto p2, int lado) {
-    int ind = -1;
-    int max_dist = 0;
+// p1 e p2 são os pontos de inicio e fim da linha
+void qHull(pair<int, int> *a, int n, pair<int, int>  p1, pair<int, int>  p2, int lado) {
+    int indice = -1;
+    int maxDist = 0;
 
     // encontrar o ponto com distância máxima da linha.
-    for (int i = 0; i < n; i++) {
-        Ponto p = a[i];
-        //distancia entre os dois pontos p1 e p2
-        int dis = (p.second - p1.second) * (p2.first - p1.first) -
-                  (p2.second - p1.second) * (p.first - p1.first);
-        int temp = abs(dis);
-        int aux;
+    for (int i = 0; i < n; i++) { // n * 3
+        //distancia entre os dois pontos
+        int distancia = (a[i].second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (a[i].first - p1.first);
+        int dist_relativa = abs(distancia);
 
-        if (dis > 0) {
-            aux = 1;
+
+        //Retorna o sentido em relação à linha que une os pontos p1 e p2.
+        if (distancia > 0) {
+            //se forem do msm lado e dist_relativa > distancia max
+            if (1 == lado && dist_relativa > maxDist) {
+                indice = i;
+                maxDist = dist_relativa;
+            }
         } else {
-            aux = -1; //Retorna o lado do ponto p em relação à linha que une os pontos p1 e p2.
+            //se forem de lado oposto e dist_relativa > distancia max
+            if (-1 == lado && dist_relativa > maxDist) {
+                indice = i;
+                maxDist = dist_relativa;
+            }
         }
 
-        if (aux == lado && temp > max_dist) {
-            ind = i;
-            max_dist = temp;
-        }
     }
-    if (ind == -1) { // Se nenhum ponto for encontrado adicione os pontos finais na casca convexa.
+    if (indice == -1) { // Se nenhum ponto for encontrado, insira os pontos na casca convexa.
         casca.insert(p1);
         casca.insert(p2);
         return;
     }
-    // Recorre para as duas partes divididas por um [ind]
-    qHull(a, n, a[ind], p1, -orientacao(a[ind], p1, p2));
-    qHull(a, n, a[ind], p2, -orientacao(a[ind], p2, p1));
+    //percorre o msm ponto em sentido contrário.
+    qHull(a, n, a[indice], p1, -orientacao(a[indice], p1, p2));
+    qHull(a, n, a[indice], p2, -orientacao(a[indice], p2, p1));
 }
 
 void imprimeCasca(pair<int, int> *p, int n) {
