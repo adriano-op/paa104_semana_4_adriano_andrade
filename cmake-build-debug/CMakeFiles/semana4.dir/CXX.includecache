@@ -19,4 +19,8 @@ random
 -
 stdio.h
 -
+math.h
+-
+bits/stdc++.h
+-
 

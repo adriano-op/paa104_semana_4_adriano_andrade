@@ -53,7 +53,7 @@ função int main(int argc, char** argv) e exevutar
     
 
 14.  Implemente o algoritmo QuickHull que usa o paradigma de divisão e conquista para encontrar 
-     o ConvexHull de um conjunto de pontos.  
+     o ConvexHull de um casca de pontos.  
      Como o seu custo se compara com o algoritmo de força bruta?
      
 

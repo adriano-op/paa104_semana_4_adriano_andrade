@@ -4,10 +4,157 @@
 #include <cmath>
 #include <random>
 #include<stdio.h>
+#include<math.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+
+struct Point {
+    double x, y;
+};
+
+#define Ponto pair<int, int>
+set<Ponto> casca;
+int orientacao(Ponto p1, Ponto p2, Ponto p) {
+    int res = (p.second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (p.first - p1.first);
+
+    if (res == 0) { return 0; }
+    else if (res > 0) { return 1; }
+    else { return 2; }
+}
+
+// p1 e p2 são os pontos finais da linha
+void qHull(pair<int, int> *a, int n, Ponto p1, Ponto p2, int lado) {
+    int ind = -1;
+    int max_dist = 0;
+
+    // encontrar o ponto com distância máxima da linha.
+    for (int i = 0; i < n; i++) {
+        Ponto p = a[i];
+        //distancia entre os dois pontos p1 e p2
+        int dis = (p.second - p1.second) * (p2.first - p1.first) -
+                  (p2.second - p1.second) * (p.first - p1.first);
+        int temp = abs(dis);
+        int aux;
+
+        if (dis > 0) {
+            aux = 1;
+        } else {
+            aux = -1; //Retorna o lado do ponto p em relação à linha que une os pontos p1 e p2.
+        }
+
+        if (aux == lado && temp > max_dist) {
+            ind = i;
+            max_dist = temp;
+        }
+    }
+    if (ind == -1) { // Se nenhum ponto for encontrado adicione os pontos finais na casca convexa.
+        casca.insert(p1);
+        casca.insert(p2);
+        return;
+    }
+    // Recorre para as duas partes divididas por um [ind]
+    qHull(a, n, a[ind], p1, -orientacao(a[ind], p1, p2));
+    qHull(a, n, a[ind], p2, -orientacao(a[ind], p2, p1));
+}
+
+void imprimeCasca(pair<int, int> *p, int n) {
+    //Encontra o ponto com p coordenada x mínima e máxima
+    int minX = 0, maxX = 0;
+    for (int i = 1; i < n; i++) {
+        if (p[i].first < p[minX].first)
+            minX = i;
+        if (p[i].first > p[maxX].first)
+            maxX = i;
+    }
+    qHull(p, n, p[minX], p[maxX], 1); // sentido horario
+    qHull(p, n, p[minX], p[maxX], -1); // sentido anti-horario
+
+    cout << "Pontos que pertence ao quick hull: " << endl;
+
+    for (auto it1 = casca.begin(); it1 != casca.end(); it1++) {
+        cout << "(" << it1->first << ", " << it1->second << ") ";
+    }
+
+}
+
+
+// Resultado: distância euclidiana entre o par de pontos mais próximo
+double distancia(Point a, Point b) {
+    double z = (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+    return sqrt(z);
+};
+
+//T(1) = 1
+//T(n)= 2T(n/2) + f(n)
+//Semelhante ao QuickSort, tem complexidade O(n log n) para entradas favoráveis. Porém, no pior caso, tem complexidade O(n²)
+//Quickhull é um método de calcular o casco convexo de um casca finito de pontos no espaço n-dimensional.
+// Ele usa uma abordagem de dividir para conquistar semelhante à de quicksort, da qual seu nome deriva.
+//A idéia principal do QuickHull é descartar rapidamente pontos que obviamente estão no interior do fecho
+double efficientClosestPair(Point p[], Point q[], int n) {
+    int meio = (n / 2), num = 0;
+    double dl, dr, d, dminsq;
+    Point pl[n], pr[n], ql[n], qr[n], s[n];
+
+    // Deve haver pelo menos 3 pontos
+    // Quando n == 3, encontre diretamente a distância mínima
+    if (n == 2) {
+        //  cout << "Calculado a distância entre os pontos " << endl;
+        return distancia(p[0], p[1]); // calculada por força bruta
+    }
+// retorna a distância mínima encontrada pelo algoritmo de força bruta
+    else if (n == 3) {
+        //  cout << "Calculado a distância entre os pontos " << endl;
+        return std::min(distancia(p[0], p[1]), distancia(p[1], p[2]));
+    } else {
+        for (int i = 0; i < meio; i++) {
+            // Copia os primeiros [n/2] pontos de p para pl, de q para ql
+            pl[i] = p[i];
+            ql[i] = q[i];
+            // Copie os [n/2] pontos restantes de p para pr, de q para qr
+            pr[i] = p[i + meio];
+            qr[i] = q[i + meio];
+        }
+
+        // Atribuir a distância mínima em pl, ql a dl
+        dl = efficientClosestPair(pl, ql, meio);
+        // Atribuir a distância mínima em pr, qr a dr
+        dr = efficientClosestPair(pr, qr, n - meio);
+
+        // Atribuir a menor distância entre os dois para d
+        d = std::min(dl, dr);
+
+        int index = (ceil(n / 2) - 1); // metade de baixo
+
+        int m = p[index].x;
+        // Copia todos os pontos de | x-m | <d em q para a array s[0..num-1]
+        for (int i = 0; i < n; i++) {
+            if (fabs(q[i].x - m) < d) {
+                s[num++] = q[i];
+            }
+        }
+        // Defina a distância mínima dminsq para d * d
+        dminsq = d * d;
+        // Julgue o valor de cada dois pontos na matriz s, se for menor que dminsq, atribua o comprimento desses dois pontos a dminsq
+        for (int i = 0; i < num - 2; i++) {
+            int k = i + 1;
+            while (k <= num - 1 && (s[k].y - s[i].y) * (s[k].y - s[i].y) < dminsq) {
+                dminsq = min((s[k].x - s[i].x) * (s[k].x - s[i].x) + (s[k].y - s[i].y) * (s[k].y - s[i].y), dminsq);
+                k++;
+            }
+        }
+    }
+    // Retorna a distância mínima
+    return sqrt(dminsq);
+
+
+}
+
+
 //utilizada para int
+//BST de busca; obedece as regras de dois filhos por nós e filho menores que o pai, lado esquerdo e maior, lado direto
+//arvore binaria obedece a regra de dois filhos por nós
 class node {
 public:
     int elemnto;
@@ -126,8 +273,7 @@ Tree *insertString(string elemento, Tree *t) {
     return t;
 }
 
-
-
+//10
 //calcula a altura da arvore
 int height(node *node) {
     if (node == NULL)
@@ -198,6 +344,8 @@ void quickSort(std::vector<T> &arr, int low, int high) {
 //    }
 //}
 
+
+//exercicio 5> da lista
 /**
  * @see Descrição do problema:
  *  Dado um array A[] de tamanho n, encontre os elementos máximo e mínimo presentes no array.
@@ -214,10 +362,11 @@ template<class T>
 std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
     T max;
     T min;
-    if (l == r) {
+
+    if (l == r) { //Se N == 1, retorne o elemento como máximo e mínimo
         max = arr[l];
         min = arr[l];
-    } else if (l + 1 == r) {
+    } else if (l + 1 == r) {//segunda metade
         if (arr[l] < arr[r]) {
             max = arr[r];
             min = arr[l];
@@ -227,9 +376,10 @@ std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
         }
     } else {
         int m = (l + r) / 2;
-        std::vector<T> left = posicaoMaioreMenorElemento(arr, l, m);
+        std::vector<T> left = posicaoMaioreMenorElemento(arr, l,
+                                                         m); //Calcule recursivamente o máximo e o mínimo para as partes esquerda e direita
         std::vector<T> right = posicaoMaioreMenorElemento(arr, m + 1, r);
-        if (left[0] > right[0])
+        if (left[0] > right[0]) //Encontre o máximo e o mínimo com 2 comparações
             max = left[0];
         else
             max = right[0];
@@ -238,19 +388,93 @@ std::vector<T> posicaoMaioreMenorElemento(std::vector<T> &arr, int l, int r) {
         else
             min = right[1];
     }
-    std::vector<int> ans = {max, min};
-    return ans;
+    std::vector<int> res = {max, min};
+    return res;
 }
 
+
+template<class T>
+std::vector<T> posicaoMaioreMenorElementoForcaBruta(std::vector<T> &arr) {
+    T max = arr[0];
+    T min = arr[0];
+
+    std::vector<T> res;
+//    if (arr.size() == 1) {
+//        res.push_back(max);
+//        res.push_back(min);
+//        return res;
+//    //} else {
+    //
+    for (int i = 1; i < arr.size(); i++) { //  Analise de complexidade: 2*(n-1) = 2n - 2
+        if (arr[i] > max) {   // 2 iteraçãoes no pior caso
+            max = arr[i];
+        } else if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    //  }
+    res.push_back(max);
+    res.push_back(min);
+    return res;
+}
+
+
+template<class T>
+std::vector<T> posicaoMaioreMenorElementoPair(std::vector<T> &arr) {
+    T max, min;
+    int i, n = arr.size();
+    //se é impar, inicializa min e max com o primeiro elemento do array
+    if (n % 2 == 1) // 3 * (n-1) / 2
+    {
+        max = arr[0];
+        min = arr[0];
+        i = 1;
+    }
+        // se não, compare os elementos e defina min para o valor menor e max para o valor maior
+    else //1 + 3*(n-2)/2 = 3n/2-2
+    {
+        if (arr[0] < arr[1]) {
+            max = arr[1];
+            min = arr[0];
+        } else {
+            max = arr[0];
+            min = arr[1];
+        }
+        i = 2;
+    }
+    // Para cada par, compare os dois elementos e, em seguida,
+    // Compare o elemento maior com o máximo, atualize o máximo se necessário.
+    // Compare o elemento menor com min, atualize min se necessário.
+    while (i < n) {
+        if (arr[i] < arr[i + 1]) {
+            if (arr[i] < min)
+                min = arr[i];
+            if (arr[i + 1] > max)
+                max = arr[i + 1];
+        } else {
+            if (arr[i] > max)
+                max = arr[i];
+            if (arr[i + 1] < min)
+                min = arr[i + 1];
+        }
+        i = i + 2;
+    }
+    std::vector<T> res = {max, min};
+    return res;
+}
+
+//encontrar a posição do maior elemento em um array e retorne a sua posição
+//C(N) = 2C(N/2) + 1, C(1)=0
+//     =n−1
 template<class T>
 int posicaoMaiorElemento(std::vector<T> &arr, int begin, int end) {
-    if (begin == end) {
-        return begin;
+    if (begin == end) {        // T(N)=0
+        return begin; // retorno nao é operação básica
     }
     int m = ((begin + end) / 2);
 
     int p1 = posicaoMaiorElemento(arr, begin, m);        //2T(n/2) -> divide em subproblemas
-    int p2 = posicaoMaiorElemento(arr, m + 1, end); //2T(n/2)
+    int p2 = posicaoMaiorElemento(arr, m + 1, end);      //2T(n/2)
 
     if (arr[p1] >= arr[p2]) {
 //            cout << "arr[p1] " << arr[p1]  << endl;
@@ -446,7 +670,7 @@ void strassen() {
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            a[i][j] = 1 + rand() % 100;;
+            a[i][j] = 1 + rand() % 100;
         }
     }
 
@@ -553,39 +777,20 @@ int main() {
     //------------------------------------------------------------------------------------------------------------------
 
 
-//    int n = 10;
-//
-//
-//    int minval, maxval = 0;
-//    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
-//    printVector(arr);
-//    posicaoMaioreMenorElemento(arr, 0, arr.size()-1, &minval, &maxval);//Note that the address is passed here because the outside value needs to be changed through the function
-//
-//    cout << "  Max: " <<  maxval << "  Min: " << minval ;
 
-//https://www.programmersought.com/article/59775787376/
 //    int n = 10;
 //    std::vector<int> arr = {97, 494, 564, 909, 542, 124, 8, 605, 540, 884};
 //    printVector(arr);
-//    std::vector<int> ar =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);//Note that the address is passed here because the outside value needs to be changed through the function
+////    std::vector<int> arDC =  posicaoMaioreMenorElemento(arr, 0, arr.size()-1);
+////    cout << "MaxDC: " << arDC[0] << endl;
+////    cout << "MinDC: " << arDC[1] << endl;
 //
-//
-//    int p_max;
-//    int p_min;
-//    for (int i=0; i < arr.size(); i++){
-//        if(arr[i]==ar[0]){
-//            p_max=i;
-//        }
-//        if(arr[i]== ar[1]){
-//            p_min=i;
-//
-//        }
-//    }
-//    cout << "Max: " <<  ar[0] ;
-//    cout << " Elem max : " << p_max << endl;
-//
-//    cout << "Min: " << ar[1]  ;
-//    cout << " Elem min : " << p_min << endl;
+//    //// Força Bruta
+//    std::vector<int> arFB =  posicaoMaioreMenorElementoForcaBruta(arr);
+//    cout << "MaxFB: " << arFB[0] << endl;
+//    cout << "MinFB: " << arFB[1] << endl;
+
+
     //666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     //----------------------------------------------- quickSort  -------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
@@ -628,7 +833,7 @@ int main() {
     //----------------------------------------------------  BST - height------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 
-   // Implemente um algoritmo recursivo que encontre o tamanho de uma  ́arvore bin ́aria.
+    // Implemente um algoritmo recursivo que encontre o tamanho de uma  ́arvore bin ́aria.
 
 //    node *root = NULL;
 //    cout << "Inserção: " << endl;
@@ -675,5 +880,65 @@ int main() {
     //----------------------------------------------------  Strassen ---------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 
-       strassen();
+    //   strassen();
+
+    //14-----------------------------------------------------------------14---------------------------------------------
+    //----------------------------------------------------  QuickHull---------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    Point p[] = {{16, 3},
+                 {12, 17},
+                 {0,  6},
+                 {-4, -6},
+                 {16, 6},
+                 {16, -7},
+                 {16, -3},
+                 {17, -4},
+                 {5,  19},
+                 {19, -8},
+                 {3,  16},
+                 {12, 13},
+                 {3,  -4},
+                 {17, 5},
+                 {-3, 15},
+                 {-3, -9},
+                 {0,  11},
+                 {-9, -3},
+                 {-4, -2},
+                 {12, 10}};
+    Point q[] = {{16, 3},
+                 {12, 17},
+                 {0,  6},
+                 {-4, -6},
+                 {16, 6},
+                 {16, -7},
+                 {16, -3},
+                 {17, -4},
+                 {5,  19},
+                 {19, -8},
+                 {3,  16},
+                 {12, 13},
+                 {3,  -4},
+                 {17, 5},
+                 {-3, 15},
+                 {-3, -9},
+                 {0,  11},
+                 {-9, -3},
+                 {-4, -2},
+                 {12, 10}};
+
+    //  int tam = sizeof(p) / sizeof(p[0]);
+    // cout << "A distância mínima é： " << efficientClosestPair(p, q, tam);
+
+    Ponto a[] = {{0, 3},
+                 {1, 1},
+                 {2, 2},
+                 {4, 4},
+                 {0, 0},
+                 {1, 2},
+                 {3, 1},
+                 {3, 3}};
+    int n = sizeof(a) / sizeof(a[0]);
+    imprimeCasca(a, n);
 }
