@@ -14,6 +14,7 @@ struct Point {
     double x, y;
 };
 
+
 #define Ponto pair<int, int>
 set<Ponto> casca;
 int orientacao(Ponto p1, Ponto p2, Ponto p) {
