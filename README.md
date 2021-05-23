@@ -9,7 +9,9 @@ Todo o codigo fonte está disponivel no arquivo main.cpp, seguindo a ordem da li
 Cada função está separada por um bloco de comentários.
 
 Para executar cada função, basta descomentar o trecho de codigo correspondente na 
-função int main(int argc, char** argv) e exevutar
+função int main(int argc, char** argv) e exevutar.
+
+> Alguns exerciícios apresentam o teste de desempenho com o matplot 
 
 
 1.  Implemente o algoritmo MergeSort

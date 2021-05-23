@@ -6,7 +6,7 @@
 #include<stdio.h>
 #include<math.h>
 #include <bits/stdc++.h>
-
+#include <matplot/matplot.h>
 using namespace std;
 
 
@@ -15,23 +15,65 @@ struct Point {
 };
 
 #define Ponto pair<int, int>
-set<Ponto> casca;
+set<Ponto > casca;
+
+//The Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, …
+//The Fibonacci recurrence:
+//F(n) = F(n-1) + F(n-2)
+//F(0) = 0
+//F(1) = 1
+//T(n)= 2^n; O(2^n)
+int FibIRC(int n) {
+    if(n == 1 || n == 2){
+        return 1;
+    }
+    return FibIRC(n - 1) + FibIRC(n - 2);
+}
+
+//The Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, …
+//The Fibonacci recurrence:
+//F(n) = F(n-1) + F(n-2)
+//F(0) = 0
+//F(1) = 1
+//T(n)= n; O(n)
+
+std::vector<int> fibonacciFB(int n){
+    std::vector<int> v;
+    v.push_back(0);
+    v.push_back(1);
+//soluçãõ eificente, estrategia bottom up
+    for(int i =2; i < n; i++){
+        v.push_back( v[i-1] + v[i-2] );
+    }
+
+    for(int i=0; i< n; i++){
+        cout << v[i] << " ";
+    }
+    cout << endl;
+
+    cout << v[n-1];
+    return v;
+}
+
+
+
+
 int orientacao(Ponto p1, Ponto p2, Ponto p) {
     int res = (p.second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (p.first - p1.first);
-
-    if (res == 0) { return 0; }
-    else if (res > 0) { return 1; }
-    else { return 2; }
+    if (res == 0) return 0;
+    return (res > 0) ? 1 : 2; // no sentido horário ou anti-horário
 }
+
 // p1 e p2 são os pontos de inicio e fim da linha
-void qHull(pair<int, int> *a, int n, pair<int, int>  p1, pair<int, int>  p2, int lado) {
+void qHull(pair<int, int> *a, int n, pair<int, int> p1, pair<int, int> p2, int lado) {
     int indice = -1;
     int maxDist = 0;
 
     // encontrar o ponto com distância máxima da linha.
     for (int i = 0; i < n; i++) { // n * 3
         //distancia entre os dois pontos
-        int distancia = (a[i].second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (a[i].first - p1.first);
+        int distancia =
+                (a[i].second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (a[i].first - p1.first);
         int dist_relativa = abs(distancia);
 
 
@@ -49,8 +91,8 @@ void qHull(pair<int, int> *a, int n, pair<int, int>  p1, pair<int, int>  p2, int
                 maxDist = dist_relativa;
             }
         }
-
     }
+
     if (indice == -1) { // Se nenhum ponto for encontrado, insira os pontos na casca convexa.
         casca.insert(p1);
         casca.insert(p2);
@@ -62,7 +104,7 @@ void qHull(pair<int, int> *a, int n, pair<int, int>  p1, pair<int, int>  p2, int
 }
 
 void imprimeCasca(pair<int, int> *p, int n) {
-    //Encontra o ponto com p coordenada x mínima e máxima
+    //Procura o ponto com a menor e maior coordenada.
     int minX = 0, maxX = 0;
     for (int i = 1; i < n; i++) {
         if (p[i].first < p[minX].first)
@@ -73,7 +115,7 @@ void imprimeCasca(pair<int, int> *p, int n) {
     qHull(p, n, p[minX], p[maxX], 1); // sentido horario
     qHull(p, n, p[minX], p[maxX], -1); // sentido anti-horario
 
-    cout << "Pontos que pertence ao quick hull: " << endl;
+    cout << "Conjunto de pontos em ordem crescente de coordenadas: " << endl;
 
     for (auto it1 = casca.begin(); it1 != casca.end(); it1++) {
         cout << "(" << it1->first << ", " << it1->second << ") ";
@@ -725,17 +767,47 @@ int main() {
 //    cout << "O array: \n";
 //    printVector(arr);
 //
-//
 //    mergeSort(arr, 0, arr.size() - 1);
 //
 //    cout << "Array ordenado: \n";
 //    printVector(arr);
 
+
+    // para teste de desempenho
+//    std::vector<int> ns({ 2000,4000,5000,6000,7000,9000,10000});
+//    std::vector<double> time({});
+//
+//
+//    for (int n : ns) {
+//        auto start = std::chrono::system_clock::now();
+//        std::vector<int> arr = inicializaVectorRandom(n); // O(n)
+//        mergeSort(arr, 0, arr.size() - 1);
+//
+//        auto finish= std::chrono::system_clock::now();
+//
+//        std::chrono::duration<double> elapsed = finish - start;
+//        std::cout << "N = " << n << " : " << elapsed.count() << std::endl;
+//
+//        time.push_back(elapsed.count());
+//    }
+//
+//    matplot::plot(ns,time, "-s")
+//            ->line_width(5)
+//            .marker_size(10)
+//            .marker_color("g")
+//            .marker_face_color({.5,.5,.5});
+//
+//    matplot::show();
+
     ///22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
     //----------------------------------------- MergeSort ----- String--------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 
-//    std::vector<string> arr = {"E", "X", "A","M", "P", "L", "E"};//inicializaVectorRandom(n); // O(n)
+    //----------------------------------------- resposta no  pdf --------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+
+
+//    std::vector<string> arr = {"E", "X", "A","M", "P", "L", "E"};
 //    cout << "Tamanho do Vetor: " <<arr.size() << endl;
 //
 //    cout << "O array: \n";
@@ -887,60 +959,83 @@ int main() {
     //14-----------------------------------------------------------------14---------------------------------------------
     //----------------------------------------------------  QuickHull---------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
+//    Ponto a[] = {{16, 3},
+//                 {12, 17},
+//                 {0,  6},
+//                 {-4, -6},
+//                 {16, 6},
+//                 {16, -7},
+//                 {16, -3},
+//                 {17, -4},
+//                 {5,  19},
+//                 {19, -8},
+//                 {3,  16},
+//                 {12, 13},
+//                 {3,  -4},
+//                 {17, 5},
+//                 {-3, 15},
+//                 {-3, -9},
+//                 {0,  11},
+//                 {-9, -3},
+//                 {-4, -2},
+//                 {12, 10}};
+//
+//
+//    int n = sizeof(a) / sizeof(a[0]);
+//    cout << "Número de pontos: " <<n << endl;
+//    cout << "Matriz de pontos:" << endl;
+//    for (Ponto pa :a) {
+//        cout << "(" << pa.first << ", " << pa.second << ") ";
+//    }
+//    cout << endl;
+//    imprimeCasca(a, n);
+
+    //--------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------  efficientClosestPair---------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
 
 
-    Point p[] = {{16, 3},
-                 {12, 17},
-                 {0,  6},
-                 {-4, -6},
-                 {16, 6},
-                 {16, -7},
-                 {16, -3},
-                 {17, -4},
-                 {5,  19},
-                 {19, -8},
-                 {3,  16},
-                 {12, 13},
-                 {3,  -4},
-                 {17, 5},
-                 {-3, 15},
-                 {-3, -9},
-                 {0,  11},
-                 {-9, -3},
-                 {-4, -2},
-                 {12, 10}};
-    Point q[] = {{16, 3},
-                 {12, 17},
-                 {0,  6},
-                 {-4, -6},
-                 {16, 6},
-                 {16, -7},
-                 {16, -3},
-                 {17, -4},
-                 {5,  19},
-                 {19, -8},
-                 {3,  16},
-                 {12, 13},
-                 {3,  -4},
-                 {17, 5},
-                 {-3, 15},
-                 {-3, -9},
-                 {0,  11},
-                 {-9, -3},
-                 {-4, -2},
-                 {12, 10}};
+//    Point p[] = {{16, 3},
+//                 {12, 17},
+//                 {0,  6},
+//                 {-4, -6},
+//                 {16, 6},
+//                 {16, -7},
+//                 {16, -3},
+//                 {17, -4},
+//                 {5,  19},
+//                 {19, -8},
+//                 {3,  16},
+//                 {12, 13},
+//                 {3,  -4},
+//                 {17, 5},
+//                 {-3, 15},
+//                 {-3, -9},
+//                 {0,  11},
+//                 {-9, -3},
+//                 {-4, -2},
+//                 {12, 10}};
+//    Point q[] = {{16, 3},
+//                 {12, 17},
+//                 {0,  6},
+//                 {-4, -6},
+//                 {16, 6},
+//                 {16, -7},
+//                 {16, -3},
+//                 {17, -4},
+//                 {5,  19},
+//                 {19, -8},
+//                 {3,  16},
+//                 {12, 13},
+//                 {3,  -4},
+//                 {17, 5},
+//                 {-3, 15},
+//                 {-3, -9},
+//                 {0,  11},
+//                 {-9, -3},
+//                 {-4, -2},
+//                 {12, 10}};
 
     //  int tam = sizeof(p) / sizeof(p[0]);
     // cout << "A distância mínima é： " << efficientClosestPair(p, q, tam);
-
-    Ponto a[] = {{0, 3},
-                 {1, 1},
-                 {2, 2},
-                 {4, 4},
-                 {0, 0},
-                 {1, 2},
-                 {3, 1},
-                 {3, 3}};
-    int n = sizeof(a) / sizeof(a[0]);
-    imprimeCasca(a, n);
 }
