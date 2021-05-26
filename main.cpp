@@ -7,6 +7,7 @@
 #include<math.h>
 #include <bits/stdc++.h>
 #include <matplot/matplot.h>
+
 using namespace std;
 
 
@@ -14,7 +15,9 @@ struct Point {
     double x, y;
 };
 
+
 #define Ponto pair<int, int>
+
 set<Ponto > casca;
 
 //The Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, …
@@ -24,7 +27,7 @@ set<Ponto > casca;
 //F(1) = 1
 //T(n)= 2^n; O(2^n)
 int FibIRC(int n) {
-    if(n == 1 || n == 2){
+    if (n == 1 || n == 2) {
         return 1;
     }
     return FibIRC(n - 1) + FibIRC(n - 2);
@@ -37,25 +40,23 @@ int FibIRC(int n) {
 //F(1) = 1
 //T(n)= n; O(n)
 
-std::vector<int> fibonacciFB(int n){
+std::vector<int> fibonacciFB(int n) {
     std::vector<int> v;
     v.push_back(0);
     v.push_back(1);
 //soluçãõ eificente, estrategia bottom up
-    for(int i =2; i < n; i++){
-        v.push_back( v[i-1] + v[i-2] );
+    for (int i = 2; i < n; i++) {
+        v.push_back(v[i - 1] + v[i - 2]);
     }
 
-    for(int i=0; i< n; i++){
+    for (int i = 0; i < n; i++) {
         cout << v[i] << " ";
     }
     cout << endl;
 
-    cout << v[n-1];
+    cout << v[n - 1];
     return v;
 }
-
-
 
 
 int orientacao(Ponto p1, Ponto p2, Ponto p) {
@@ -536,28 +537,23 @@ int posicaoMaiorElemento(std::vector<T> &arr, int begin, int end) {
 // O segundo subarray é arr [m + 1..r]
 template<class T>
 void merge(std::vector<T> &arr, int l, int m, int r) {
+    //l=0;
     int x = m - l + 1; // primeira metade
     int y = r - m;     // segunda metade
 
-    // Create temp arrays
-    std::vector<T> B(x), C(y);
+    std::vector<T> B(x), C(y); //vetor temporario
 
-// Copiar dados para matrizes temporárias B [] e C []
+// Copiar dados para matrizes temporárias B[] e C[]
     for (int i = 0; i < x; i++)
         B[i] = arr[l + i];
     for (int j = 0; j < y; j++)
         C[j] = arr[m + 1 + j];
 
     // Mesclar as matrizes temporárias de volta em arr [l..r]
+    int i = 0;    // Índice inicial do primeiro subarray
+    int j = 0;    // Índice inicial do segundo subarray
+    int k = l;    // Índice inicial do subarray mesclado
 
-    // Índice inicial do primeiro subarray
-    int i = 0;
-
-    // Índice inicial do segundo subarray
-    int j = 0;
-
-    // Índice inicial do subarray mesclado
-    int k = l;
 
     while (i < x && j < y) {
         if (B[i] <= C[j]) {
@@ -613,6 +609,7 @@ std::vector<int> inicializaVector(int n) {
     for (int i = 1; i < n + 1; i++) {
         v.push_back(i);
     }
+
     printVector(v);
     return v;
 }
@@ -628,7 +625,7 @@ std::vector<int> inicializaVectorRandom(int t) {
     return nums;
 }
 
-const int N = 2;
+const int N = 4;
 
 
 double insert() {
@@ -704,6 +701,7 @@ void printmatriz(vector<vector<int>> &permutacao) {
     }
 }
 
+
 void strassen() {
     double a00, a10, a11, a01, a[N][N], b[N][N];
     cout << "Exibindo o conteúdo da matriz declarada e inicializada:" << endl;
@@ -733,15 +731,17 @@ void strassen() {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             b[i][j] = 10 + rand() % 100;
-        }
-    }
-    cout << " \n";
-    for (int linha = 0; linha < N; linha++) {
-        for (int coluna = 0; coluna < N; coluna++) {
-            cout << b[linha][coluna] << " ";
+            cout << b[i][j] << " ";
         }
         cout << "\n";
-    };
+    }
+//    cout << " \n";
+//    for (int linha = 0; linha < N; linha++) {
+//        for (int coluna = 0; coluna < N; coluna++) {
+//            cout << b[linha][coluna] << " ";
+//        }
+//        cout << "\n";
+//    }
 
 
     a00 = m1(a, b) + m4(a, b) - m5(a, b) + m7(a, b);
@@ -754,6 +754,131 @@ void strassen() {
     cout << "\n" << a00 << " " << a01;
     cout << "\n" << a10 << " " << a11;
 }
+
+
+#define SIZE 4 // size precisa ser potencia de 2
+
+
+/*For printing the matrix in standard output(console)*/
+void WriteMatrix(int A[][SIZE], int N) {
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << A[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+/*This function will add two square matrix*/
+void somaMatriz(int A[][SIZE], int B[][SIZE], int C[][SIZE], int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+        }
+    }
+
+}
+
+/*This function will subtract one  square matrix from another*/
+void subtraiMatriz(int A[][SIZE], int B[][SIZE], int Result[][SIZE], int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            Result[i][j] = A[i][j] - B[i][j];
+        }
+    }
+}
+
+// é um algoritmo utilizado para realizar a multiplicação de matrizes. Ele é assintoticamente mais rápido
+// que o algoritmo tradicional, e é útil na prática ao lidar com matrizes grandes.//
+// T(n)=7M(n/2) for n>1,M(1)=1.
+// n= 2^k; T(N) =n²
+void StrassenDC(int A[][SIZE], int B[][SIZE], int C[][SIZE], int N) {
+    if (N == 1) {
+        C[0][0] = A[0][0] * B[0][0];
+        return;
+    } else {
+        int meio = (N / 2);
+
+        int A11[SIZE][SIZE], A12[SIZE][SIZE], A21[SIZE][SIZE], A22[SIZE][SIZE]; //matriz auxiliar
+        int B11[SIZE][SIZE], B12[SIZE][SIZE], B21[SIZE][SIZE], B22[SIZE][SIZE]; //matriz auxiliar
+        int C11[SIZE][SIZE], C12[SIZE][SIZE], C21[SIZE][SIZE], C22[SIZE][SIZE];//matriz auxiliar
+
+        //armazena os valores calculados pelas matrizes axiliares.
+        int P1[SIZE][SIZE], P2[SIZE][SIZE], P3[SIZE][SIZE], P4[SIZE][SIZE], P5[SIZE][SIZE], P6[SIZE][SIZE], P7[SIZE][SIZE];
+        int resMatrizA[SIZE][SIZE], resMatrizB[SIZE][SIZE];
+
+        //dividindo a matriz em 4 sumatrizea
+        for ( int i = 0; i < meio; i++) {
+            for (int j = 0; j < meio; j++) {
+                A11[i][j] = A[i][j];
+                A12[i][j] = A[i][j + meio];
+                A21[i][j] = A[i + meio][j];
+                A22[i][j] = A[i + meio][j + meio];
+
+                B11[i][j] = B[i][j];
+                B12[i][j] = B[i][j + meio];
+                B21[i][j] = B[i + meio][j];
+                B22[i][j] = B[i + meio][j + meio];
+            }
+        }
+
+        // Calculando p1 ao p7:
+        somaMatriz(A11, A22, resMatrizA, meio);   // a11 + a22
+        somaMatriz(B11, B22, resMatrizB, meio);   // b11 + b22
+        //atribuindo o resultado a matriz  resMatrizA, resMatrizB
+        StrassenDC(resMatrizA, resMatrizB, P1, meio);  // p1 = (a11+a22) * (b11+b22)
+
+        somaMatriz(A21, A22, resMatrizA, meio);   // a21 + a22
+        StrassenDC(resMatrizA, B11, P2, meio); // p2 = (a21+a22) * (b11)
+
+        subtraiMatriz(B12, B22, resMatrizB, meio); // b12 - b22
+        StrassenDC(A11, resMatrizB, P3, meio); // p3 = (a11) * (b12 - b22)
+
+        subtraiMatriz(B21, B11, resMatrizB, meio); // b21 - b11
+        StrassenDC(A22, resMatrizB, P4, meio); // p4 = (a22) * (b21 - b11)
+
+        somaMatriz(A11, A12, resMatrizA, meio); // a11 + a12
+        StrassenDC(resMatrizA, B22, P5, meio); // p5 = (a11+a12) * (b22)
+
+        subtraiMatriz(A21, A11, resMatrizA, meio); // a21 - a11
+        somaMatriz(B11, B12, resMatrizB, meio); // b11 + b12
+        StrassenDC(resMatrizA, resMatrizB, P6, meio); // p6 = (a21-a11) * (b11+b12)
+
+        subtraiMatriz(A12, A22, resMatrizA, meio); // a12 - a22
+        somaMatriz(B21, B22, resMatrizB, meio); // b21 + b22
+        StrassenDC(resMatrizA, resMatrizB, P7, meio); // p7 = (a12-a22) * (b21+b22)
+
+        // calculando c21, c21, c11 e c22:
+
+        somaMatriz(P3, P5, C12, meio); // c12 = p3 + p5
+        somaMatriz(P2, P4, C21, meio); // c21 = p2 + p4
+
+        somaMatriz(P1, P4, resMatrizA, meio); // p1 + p4
+        somaMatriz(resMatrizA, P7, resMatrizB, meio); // p1 + p4 + p7
+        subtraiMatriz(resMatrizB, P5, C11, meio); // c11 = p1 + p4 - p5 + p7
+
+        somaMatriz(P1, P3, resMatrizA, meio); // p1 + p3
+        somaMatriz(resMatrizA, P6, resMatrizB, meio); // p1 + p3 + p6
+        subtraiMatriz(resMatrizB, P2, C22, meio); // c22 = p1 + p3 - p2 + p6
+
+
+// Agrupando os resultados obtidos em uma única matriz
+        for (int i = 0; i < meio; i++) {
+            for (int j = 0; j < meio; j++) {
+                C[i][j] = C11[i][j];
+                C[i][j + meio] = C12[i][j];
+                C[i + meio][j] = C21[i][j];
+                C[i + meio][j + meio] = C22[i][j];
+            }
+        }
+
+    }
+
+}
+
+
+
 
 int main() {
     ///11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -954,9 +1079,46 @@ int main() {
     //----------------------------------------------------  Strassen ---------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 
-    //   strassen();
+    //   strassen(); // seguindo o livro, 2x2
 
-    //14-----------------------------------------------------------------14---------------------------------------------
+    //sendo size potencia de 2
+    int A[][SIZE] = {
+            {4, 6, 7, 2},
+            {9, 5, 1, 0},
+            {7, 0, 1, 4},
+            {5, 5, 0, 7}
+    };
+
+
+    int B[][SIZE] = {
+            {8, 0, 3, 2},
+            {1, 3, 7, 0},
+            {5, 8, 6, 1},
+            {3, 1, 4, 0}
+    };
+
+    int C[SIZE][SIZE];
+
+    StrassenDC(A, B, C, SIZE); // generalizado
+
+    cout << "A: " << endl;
+
+    WriteMatrix(A, SIZE);
+
+    cout << endl;
+    cout << "B: " << endl;
+
+    WriteMatrix(B, SIZE);
+    cout << endl;
+    cout << "Multiplicação das matrizes A e  B : " << endl;
+
+    WriteMatrix(C, SIZE);
+//79 76 104 15
+//82 23 68 19
+//73 12 43 15
+//66 22 78 10
+
+//14-----------------------------------------------------------------14---------------------------------------------
     //----------------------------------------------------  QuickHull---------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------
 //    Ponto a[] = {{16, 3},
