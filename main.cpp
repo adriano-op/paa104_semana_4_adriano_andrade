@@ -756,129 +756,157 @@ void strassen() {
 }
 
 
-#define SIZE 4 // size precisa ser potencia de 2
-
-
-/*For printing the matrix in standard output(console)*/
-void WriteMatrix(int A[][SIZE], int N) {
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cout << A[i][j] << " ";
+std::vector<std::vector<int>> inicializaMatriz(int &n) {
+    std::vector<std::vector<int>> aux(n, std::vector<int>(n));
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) {
+            aux[i][j] = rand() % 10;
         }
-        cout << endl;
+    return aux;
+}
+
+std::vector<std::vector<int>> add(std::vector<std::vector<int>> &x,
+                                  std::vector<std::vector<int>> &y) {
+    int n = x.size();
+    std::vector<std::vector<int>> aux(n, std::vector<int>(n));
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            aux[i][j] = x[i][j] + y[i][j];
+    return aux;
+}
+
+std::vector<std::vector<int>> subtract(std::vector<std::vector<int>> &x, std::vector<std::vector<int>> &y) {
+    int n = x.size();
+    std::vector<std::vector<int>> aux(n, std::vector<int>(n));
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            aux[i][j] = x[i][j] - y[i][j];
+    return aux;
+}
+
+void dividir(std::vector<std::vector<int>> &x,
+             std::vector<std::vector<int>> &a,
+             std::vector<std::vector<int>> &b,
+             std::vector<std::vector<int>> &c,
+             std::vector<std::vector<int>> &d, int &n2) {
+    for (int i = 0; i < n2; i++) {
+        for (int j = 0; j < n2; j++) {
+            a[i][j] = x[i][j];
+            b[i][j] = x[i][n2 + j];
+            c[i][j] = x[n2 + i][j];
+            d[i][j] = x[n2 + i][n2 + j];
+        }
     }
 }
 
-/*This function will add two square matrix*/
-void somaMatriz(int A[][SIZE], int B[][SIZE], int C[][SIZE], int N) {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            C[i][j] = A[i][j] + B[i][j];
+std::vector<std::vector<int>> joinMatriz(std::vector<std::vector<int>> &r,
+                                         std::vector<std::vector<int>> &s,
+                                         std::vector<std::vector<int>> &t,
+                                         std::vector<std::vector<int>> &u, int &n2) {
+    std::vector<std::vector<int>> aux(n2 * 2, std::vector<int>(n2 * 2));
+    for (int i = 0; i < n2; i++) {
+        for (int j = 0; j < n2; j++) {
+            aux[i][j] = r[i][j];
+            aux[i][j + n2] = s[i][j];
+            aux[n2 + i][j] = t[i][j];
+            aux[n2 + i][n2 + j] = u[i][j];
         }
     }
-
+    return aux;
 }
 
-/*This function will subtract one  square matrix from another*/
-void subtraiMatriz(int A[][SIZE], int B[][SIZE], int Result[][SIZE], int N) {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            Result[i][j] = A[i][j] - B[i][j];
+void printMatrix(std::vector<std::vector<int>> &x, int &n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            std::cout << x[i][j] << " ";
         }
+        std::cout << std::endl;
     }
+    std::cout << std::endl;
 }
 
-// é um algoritmo utilizado para realizar a multiplicação de matrizes. Ele é assintoticamente mais rápido
-// que o algoritmo tradicional, e é útil na prática ao lidar com matrizes grandes.//
-// T(n)=7M(n/2) for n>1,M(1)=1.
-// n= 2^k; T(N) =n²
-void StrassenDC(int A[][SIZE], int B[][SIZE], int C[][SIZE], int N) {
-    if (N == 1) {
-        C[0][0] = A[0][0] * B[0][0];
-        return;
+std::vector<std::vector<int>> strassen(
+        std::vector<std::vector<int>> &x,
+        std::vector<std::vector<int>> &y, int n) {
+
+    if (n == 1) {
+        std::vector<std::vector<int>> c(n, std::vector<int>(n));
+        c[0][0] = x[0][0] * y[0][0];
+        return c;
     } else {
-        int meio = (N / 2);
+        int m = n / 2;
 
-        int A11[SIZE][SIZE], A12[SIZE][SIZE], A21[SIZE][SIZE], A22[SIZE][SIZE]; //matriz auxiliar
-        int B11[SIZE][SIZE], B12[SIZE][SIZE], B21[SIZE][SIZE], B22[SIZE][SIZE]; //matriz auxiliar
-        int C11[SIZE][SIZE], C12[SIZE][SIZE], C21[SIZE][SIZE], C22[SIZE][SIZE];//matriz auxiliar
+        //matrizes auxiliares
+        std::vector<std::vector<int>> a11(m, std::vector<int>(m));
+        std::vector<std::vector<int>> a12(m, std::vector<int>(m));
+        std::vector<std::vector<int>> a21(m, std::vector<int>(m));
+        std::vector<std::vector<int>> a22(m, std::vector<int>(m));
+        std::vector<std::vector<int>> b11(m, std::vector<int>(m));
+        std::vector<std::vector<int>> b12(m, std::vector<int>(m));
+        std::vector<std::vector<int>> b21(m, std::vector<int>(m));
+        std::vector<std::vector<int>> b22(m, std::vector<int>(m));
 
-        //armazena os valores calculados pelas matrizes axiliares.
-        int P1[SIZE][SIZE], P2[SIZE][SIZE], P3[SIZE][SIZE], P4[SIZE][SIZE], P5[SIZE][SIZE], P6[SIZE][SIZE], P7[SIZE][SIZE];
-        int resMatrizA[SIZE][SIZE], resMatrizB[SIZE][SIZE];
+        //armazena o resultado as operações
+        std::vector<std::vector<int>> p1(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p2(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p3(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p4(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p5(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p6(m, std::vector<int>(m));
+        std::vector<std::vector<int>> p7(m, std::vector<int>(m));
 
-        //dividindo a matriz em 4 sumatrizea
-        for ( int i = 0; i < meio; i++) {
-            for (int j = 0; j < meio; j++) {
-                A11[i][j] = A[i][j];
-                A12[i][j] = A[i][j + meio];
-                A21[i][j] = A[i + meio][j];
-                A22[i][j] = A[i + meio][j + meio];
+        //armazena o valor da multiplicação das matrizes
+        std::vector<std::vector<int>> c11(m, std::vector<int>(m));
+        std::vector<std::vector<int>> c12(m, std::vector<int>(m));
+        std::vector<std::vector<int>> c21(m, std::vector<int>(m));
+        std::vector<std::vector<int>> c22(m, std::vector<int>(m));
 
-                B11[i][j] = B[i][j];
-                B12[i][j] = B[i][j + meio];
-                B21[i][j] = B[i + meio][j];
-                B22[i][j] = B[i + meio][j + meio];
-            }
-        }
+        // matrizes auxiliares.
+        std::vector<std::vector<int>> result;
+        std::vector<std::vector<int>> result2;
 
-        // Calculando p1 ao p7:
-        somaMatriz(A11, A22, resMatrizA, meio);   // a11 + a22
-        somaMatriz(B11, B22, resMatrizB, meio);   // b11 + b22
-        //atribuindo o resultado a matriz  resMatrizA, resMatrizB
-        StrassenDC(resMatrizA, resMatrizB, P1, meio);  // p1 = (a11+a22) * (b11+b22)
+        dividir(x, a11, a12, a21, a22, m);
+        dividir(y, b11, b12, b21, b22, m);
 
-        somaMatriz(A21, A22, resMatrizA, meio);   // a21 + a22
-        StrassenDC(resMatrizA, B11, P2, meio); // p2 = (a21+a22) * (b11)
+        result = subtract(b12, b22);
+        p1 = strassen(a11, result, m);
 
-        subtraiMatriz(B12, B22, resMatrizB, meio); // b12 - b22
-        StrassenDC(A11, resMatrizB, P3, meio); // p3 = (a11) * (b12 - b22)
+        result = add(a11, a12);
+        p2 = strassen(result, b22, m);
 
-        subtraiMatriz(B21, B11, resMatrizB, meio); // b21 - b11
-        StrassenDC(A22, resMatrizB, P4, meio); // p4 = (a22) * (b21 - b11)
+        result = add(a21, a22);
+        p3 = strassen(result, b11, m);
 
-        somaMatriz(A11, A12, resMatrizA, meio); // a11 + a12
-        StrassenDC(resMatrizA, B22, P5, meio); // p5 = (a11+a12) * (b22)
+        result = subtract(b21, b11);
+        p4 = strassen(a22, result, m);
 
-        subtraiMatriz(A21, A11, resMatrizA, meio); // a21 - a11
-        somaMatriz(B11, B12, resMatrizB, meio); // b11 + b12
-        StrassenDC(resMatrizA, resMatrizB, P6, meio); // p6 = (a21-a11) * (b11+b12)
+        result = add(a11, a22);
+        result2 = add(b11, b22);
+        p5 = strassen(result, result2, m);
 
-        subtraiMatriz(A12, A22, resMatrizA, meio); // a12 - a22
-        somaMatriz(B21, B22, resMatrizB, meio); // b21 + b22
-        StrassenDC(resMatrizA, resMatrizB, P7, meio); // p7 = (a12-a22) * (b21+b22)
+        result = subtract(a12, a22);
+        result2 = add(b21, b22);
+        p6 = strassen(result, result2, m);
 
-        // calculando c21, c21, c11 e c22:
+        result = subtract(a11, a21);
+        result2 = add(b11, b12);
+        p7 = strassen(result, result2, m);
 
-        somaMatriz(P3, P5, C12, meio); // c12 = p3 + p5
-        somaMatriz(P2, P4, C21, meio); // c21 = p2 + p4
+        result = add(p5, p4);
+        result2 = subtract(result, p2);
+        c11 = add(result2, p6);
 
-        somaMatriz(P1, P4, resMatrizA, meio); // p1 + p4
-        somaMatriz(resMatrizA, P7, resMatrizB, meio); // p1 + p4 + p7
-        subtraiMatriz(resMatrizB, P5, C11, meio); // c11 = p1 + p4 - p5 + p7
+        c12 = add(p1, p2);
+        c21 = add(p3, p4);
 
-        somaMatriz(P1, P3, resMatrizA, meio); // p1 + p3
-        somaMatriz(resMatrizA, P6, resMatrizB, meio); // p1 + p3 + p6
-        subtraiMatriz(resMatrizB, P2, C22, meio); // c22 = p1 + p3 - p2 + p6
+        result = add(p5, p1);
+        result2 = subtract(result, p3);
+        c22 = subtract(result2, p7);
 
-
-// Agrupando os resultados obtidos em uma única matriz
-        for (int i = 0; i < meio; i++) {
-            for (int j = 0; j < meio; j++) {
-                C[i][j] = C11[i][j];
-                C[i][j + meio] = C12[i][j];
-                C[i + meio][j] = C21[i][j];
-                C[i + meio][j + meio] = C22[i][j];
-            }
-        }
-
+        return joinMatriz(c11, c12, c21, c22, m);
     }
 
 }
-
-
-
 
 int main() {
     ///11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -1081,42 +1109,26 @@ int main() {
 
     //   strassen(); // seguindo o livro, 2x2
 
-    //sendo size potencia de 2
-    int A[][SIZE] = {
-            {4, 6, 7, 2},
-            {9, 5, 1, 0},
-            {7, 0, 1, 4},
-            {5, 5, 0, 7}
-    };
 
+    std::vector<std::vector<int>>  x(2, std::vector<int>(2));
+    std::vector<std::vector<int>>  y(2, std::vector<int>(2));
+    std::vector<std::vector<int>>  z(2, std::vector<int>(2));
 
-    int B[][SIZE] = {
-            {8, 0, 3, 2},
-            {1, 3, 7, 0},
-            {5, 8, 6, 1},
-            {3, 1, 4, 0}
-    };
+    int n,m = 2;
+    n= pow(m,2);  //sendo obrigatoriamente, n potencia de 2
 
-    int C[SIZE][SIZE];
+    std::cout << "Matriz 1: \n";
+    x = inicializaMatriz(n);
+    printMatrix(x, n);
 
-    StrassenDC(A, B, C, SIZE); // generalizado
+    std::cout << "Matriz 2: \n";
+    y = inicializaMatriz(n);
+    printMatrix(y, n);
 
-    cout << "A: " << endl;
+    std::cout << "Resultado: \n";
+    z = strassen(x, y, n);
+    printMatrix(z, n);
 
-    WriteMatrix(A, SIZE);
-
-    cout << endl;
-    cout << "B: " << endl;
-
-    WriteMatrix(B, SIZE);
-    cout << endl;
-    cout << "Multiplicação das matrizes A e  B : " << endl;
-
-    WriteMatrix(C, SIZE);
-//79 76 104 15
-//82 23 68 19
-//73 12 43 15
-//66 22 78 10
 
 //14-----------------------------------------------------------------14---------------------------------------------
     //----------------------------------------------------  QuickHull---------------------------------------------------
