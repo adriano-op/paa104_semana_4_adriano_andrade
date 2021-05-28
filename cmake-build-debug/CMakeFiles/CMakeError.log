@@ -1,0 +1,170 @@
+Determining if the function sgemm_ exists failed with the following output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_995bc/fast && /usr/bin/make  -f CMakeFiles/cmTC_995bc.dir/build.make CMakeFiles/cmTC_995bc.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_995bc.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=sgemm_ -o CMakeFiles/cmTC_995bc.dir/CheckFunctionExists.c.o -c /home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/share/cmake-3.19/Modules/CheckFunctionExists.c
+Linking C executable cmTC_995bc
+/home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_995bc.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=sgemm_ CMakeFiles/cmTC_995bc.dir/CheckFunctionExists.c.o -o cmTC_995bc 
+CMakeFiles/cmTC_995bc.dir/CheckFunctionExists.c.o: Na função "main":
+CheckFunctionExists.c:(.text+0x10): referência não definida para "sgemm_"
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_995bc.dir/build.make:105: recipe for target 'cmTC_995bc' failed
+make[1]: *** [cmTC_995bc] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_995bc/fast' failed
+make: *** [cmTC_995bc/fast] Error 2
+
+
+
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_b2107/fast && /usr/bin/make  -f CMakeFiles/cmTC_b2107.dir/build.make CMakeFiles/cmTC_b2107.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b2107.dir/src.c.o
+/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_b2107.dir/src.c.o -c "/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/src.c"
+Linking C executable cmTC_b2107
+/home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b2107.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_b2107.dir/src.c.o -o cmTC_b2107 
+CMakeFiles/cmTC_b2107.dir/src.c.o: Na função "main":
+src.c:(.text+0x3e): referência não definida para "pthread_create"
+src.c:(.text+0x4a): referência não definida para "pthread_detach"
+src.c:(.text+0x56): referência não definida para "pthread_cancel"
+src.c:(.text+0x67): referência não definida para "pthread_join"
+src.c:(.text+0x7b): referência não definida para "pthread_atfork"
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_b2107.dir/build.make:105: recipe for target 'cmTC_b2107' failed
+make[1]: *** [cmTC_b2107] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_b2107/fast' failed
+make: *** [cmTC_b2107/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ea272/fast && /usr/bin/make  -f CMakeFiles/cmTC_ea272.dir/build.make CMakeFiles/cmTC_ea272.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ea272.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_ea272.dir/CheckFunctionExists.c.o -c /home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/share/cmake-3.19/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ea272
+/home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ea272.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_ea272.dir/CheckFunctionExists.c.o -o cmTC_ea272  -lpthreads 
+/usr/bin/ld: não foi possível localizar -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_ea272.dir/build.make:105: recipe for target 'cmTC_ea272' failed
+make[1]: *** [cmTC_ea272] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_ea272/fast' failed
+make: *** [cmTC_ea272/fast] Error 2
+
+
+
+Determining if the include file filesystem exists failed with the following output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_fab9a/fast && /usr/bin/make  -f CMakeFiles/cmTC_fab9a.dir/build.make CMakeFiles/cmTC_fab9a.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fab9a.dir/CheckIncludeFile.cxx.o
+/usr/bin/c++   -std=gnu++1z -o CMakeFiles/cmTC_fab9a.dir/CheckIncludeFile.cxx.o -c "/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckIncludeFile.cxx"
+/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckIncludeFile.cxx:1:10: fatal error: filesystem: Arquivo ou diretório inexistente
+ #include <filesystem>
+          ^~~~~~~~~~~~
+compilation terminated.
+CMakeFiles/cmTC_fab9a.dir/build.make:84: recipe for target 'CMakeFiles/cmTC_fab9a.dir/CheckIncludeFile.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_fab9a.dir/CheckIncludeFile.cxx.o] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_fab9a/fast' failed
+make: *** [cmTC_fab9a/fast] Error 2
+
+
+
+Performing C++ SOURCE FILE Test CXX_FILESYSTEM_NO_LINK_NEEDED failed with the following compile output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_dec42/fast && /usr/bin/make  -f CMakeFiles/cmTC_dec42.dir/build.make CMakeFiles/cmTC_dec42.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_dec42.dir/src.cxx.o
+/usr/bin/c++ -DCXX_FILESYSTEM_NO_LINK_NEEDED  -std=gnu++1z -o CMakeFiles/cmTC_dec42.dir/src.cxx.o -c "/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx"
+Linking CXX executable cmTC_dec42
+/home/adriano/Downloads/CLion-2021.1/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dec42.dir/link.txt --verbose=1
+/usr/bin/c++ CMakeFiles/cmTC_dec42.dir/src.cxx.o -o cmTC_dec42 
+CMakeFiles/cmTC_dec42.dir/src.cxx.o: Na função "main":
+src.cxx:(.text+0x20): referência não definida para "std::experimental::filesystem::v1::current_path[abi:cxx11]()"
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_dec42.dir/build.make:105: recipe for target 'cmTC_dec42' failed
+make[1]: *** [cmTC_dec42] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_dec42/fast' failed
+make: *** [cmTC_dec42/fast] Error 2
+
+
+...and run output:
+
+Return value: 1
+Source file was:
+        #include <cstdlib>
+        #include <experimental/filesystem>
+
+        int main() {
+            auto cwd = std::experimental::filesystem::current_path();
+            printf("%s", cwd.c_str());
+            return EXIT_SUCCESS;
+        }
+    
+Determining if the min exist failed with the following output:
+Change Dir: /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5dc72/fast && /usr/bin/make  -f CMakeFiles/cmTC_5dc72.dir/build.make CMakeFiles/cmTC_5dc72.dir/build
+make[1]: Entering directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5dc72.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_5dc72.dir/CheckSymbolExists.c.o -c "/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.c:2:10: fatal error: Windows.h: Arquivo ou diretório inexistente
+ #include <Windows.h>
+          ^~~~~~~~~~~
+compilation terminated.
+CMakeFiles/cmTC_5dc72.dir/build.make:84: recipe for target 'CMakeFiles/cmTC_5dc72.dir/CheckSymbolExists.c.o' failed
+make[1]: *** [CMakeFiles/cmTC_5dc72.dir/CheckSymbolExists.c.o] Error 1
+make[1]: Leaving directory '/media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_5dc72/fast' failed
+make: *** [cmTC_5dc72/fast] Error 2
+
+
+File /media/adriano/DATA/Google Drive/Mestrado/UFOP/2020/PCC104/lista/semana4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <Windows.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef min
+  return ((int*)(&min))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
