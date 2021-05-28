@@ -20,45 +20,6 @@ struct Point {
 
 set<Ponto > casca;
 
-//The Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, …
-//The Fibonacci recurrence:
-//F(n) = F(n-1) + F(n-2)
-//F(0) = 0
-//F(1) = 1
-//T(n)= 2^n; O(2^n)
-int FibIRC(int n) {
-    if (n == 1 || n == 2) {
-        return 1;
-    }
-    return FibIRC(n - 1) + FibIRC(n - 2);
-}
-
-//The Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, …
-//The Fibonacci recurrence:
-//F(n) = F(n-1) + F(n-2)
-//F(0) = 0
-//F(1) = 1
-//T(n)= n; O(n)
-
-std::vector<int> fibonacciFB(int n) {
-    std::vector<int> v;
-    v.push_back(0);
-    v.push_back(1);
-//soluçãõ eificente, estrategia bottom up
-    for (int i = 2; i < n; i++) {
-        v.push_back(v[i - 1] + v[i - 2]);
-    }
-
-    for (int i = 0; i < n; i++) {
-        cout << v[i] << " ";
-    }
-    cout << endl;
-
-    cout << v[n - 1];
-    return v;
-}
-
-
 int orientacao(Ponto p1, Ponto p2, Ponto p) {
     int res = (p.second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (p.first - p1.first);
     if (res == 0) return 0;
@@ -755,18 +716,18 @@ void strassen() {
     cout << "\n" << a10 << " " << a11;
 }
 
-
+//inicializa a matriz com valores de 0  a 9
 std::vector<std::vector<int>> inicializaMatriz(int &n) {
     std::vector<std::vector<int>> aux(n, std::vector<int>(n));
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++) {
-            aux[i][j] = rand() % 10;
+            aux[i][j] = rand() % 10; //
         }
     return aux;
 }
 
-std::vector<std::vector<int>> add(std::vector<std::vector<int>> &x,
-                                  std::vector<std::vector<int>> &y) {
+std::vector<std::vector<int>> somaMatrizes(std::vector<std::vector<int>> &x,
+                                           std::vector<std::vector<int>> &y) {
     int n = x.size();
     std::vector<std::vector<int>> aux(n, std::vector<int>(n));
     for (int i = 0; i < n; ++i)
@@ -788,13 +749,13 @@ void dividir(std::vector<std::vector<int>> &x,
              std::vector<std::vector<int>> &a,
              std::vector<std::vector<int>> &b,
              std::vector<std::vector<int>> &c,
-             std::vector<std::vector<int>> &d, int &n2) {
-    for (int i = 0; i < n2; i++) {
-        for (int j = 0; j < n2; j++) {
+             std::vector<std::vector<int>> &d, int &n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             a[i][j] = x[i][j];
-            b[i][j] = x[i][n2 + j];
-            c[i][j] = x[n2 + i][j];
-            d[i][j] = x[n2 + i][n2 + j];
+            b[i][j] = x[i][n + j];
+            c[i][j] = x[n + i][j];
+            d[i][j] = x[n + i][n + j];
         }
     }
 }
@@ -802,14 +763,14 @@ void dividir(std::vector<std::vector<int>> &x,
 std::vector<std::vector<int>> joinMatriz(std::vector<std::vector<int>> &r,
                                          std::vector<std::vector<int>> &s,
                                          std::vector<std::vector<int>> &t,
-                                         std::vector<std::vector<int>> &u, int &n2) {
-    std::vector<std::vector<int>> aux(n2 * 2, std::vector<int>(n2 * 2));
-    for (int i = 0; i < n2; i++) {
-        for (int j = 0; j < n2; j++) {
+                                         std::vector<std::vector<int>> &u, int &n) {
+    std::vector<std::vector<int>> aux(n * 2, std::vector<int>(n * 2));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             aux[i][j] = r[i][j];
-            aux[i][j + n2] = s[i][j];
-            aux[n2 + i][j] = t[i][j];
-            aux[n2 + i][n2 + j] = u[i][j];
+            aux[i][j + n] = s[i][j];
+            aux[n + i][j] = t[i][j];
+            aux[n + i][n + j] = u[i][j];
         }
     }
     return aux;
@@ -825,7 +786,7 @@ void printMatrix(std::vector<std::vector<int>> &x, int &n) {
     std::cout << std::endl;
 }
 
-std::vector<std::vector<int>> strassen(
+std::vector<std::vector<int>> strassenDC(
         std::vector<std::vector<int>> &x,
         std::vector<std::vector<int>> &y, int n) {
 
@@ -862,46 +823,48 @@ std::vector<std::vector<int>> strassen(
         std::vector<std::vector<int>> c22(m, std::vector<int>(m));
 
         // matrizes auxiliares.
-        std::vector<std::vector<int>> result;
-        std::vector<std::vector<int>> result2;
+        std::vector<std::vector<int>> resA;
+        std::vector<std::vector<int>> resB;
 
+        //utilizando o conceito de multiplicação de matrizes de Strassen. A matriz de tamanho N é subdividida em matrizes
+// de tamanha n/2.
         dividir(x, a11, a12, a21, a22, m);
         dividir(y, b11, b12, b21, b22, m);
 
-        result = subtract(b12, b22);
-        p1 = strassen(a11, result, m);
+        resA = subtract(b12, b22);
+        p1 = strassenDC(a11, resA, m);
 
-        result = add(a11, a12);
-        p2 = strassen(result, b22, m);
+        resA = somaMatrizes(a11, a12);
+        p2 = strassenDC(resA, b22, m);
 
-        result = add(a21, a22);
-        p3 = strassen(result, b11, m);
+        resA = somaMatrizes(a21, a22);
+        p3 = strassenDC(resA, b11, m);
 
-        result = subtract(b21, b11);
-        p4 = strassen(a22, result, m);
+        resA = subtract(b21, b11);
+        p4 = strassenDC(a22, resA, m);
 
-        result = add(a11, a22);
-        result2 = add(b11, b22);
-        p5 = strassen(result, result2, m);
+        resA = somaMatrizes(a11, a22);
+        resB = somaMatrizes(b11, b22);
+        p5 = strassenDC(resA, resB, m);
 
-        result = subtract(a12, a22);
-        result2 = add(b21, b22);
-        p6 = strassen(result, result2, m);
+        resA = subtract(a12, a22);
+        resB = somaMatrizes(b21, b22);
+        p6 = strassenDC(resA, resB, m);
 
-        result = subtract(a11, a21);
-        result2 = add(b11, b12);
-        p7 = strassen(result, result2, m);
+        resA = subtract(a11, a21);
+        resB = somaMatrizes(b11, b12);
+        p7 = strassenDC(resA, resB, m);
 
-        result = add(p5, p4);
-        result2 = subtract(result, p2);
-        c11 = add(result2, p6);
+        resA = somaMatrizes(p5, p4);
+        resB = subtract(resA, p2);
+        c11 = somaMatrizes(resB, p6);
 
-        c12 = add(p1, p2);
-        c21 = add(p3, p4);
+        c12 = somaMatrizes(p1, p2);
+        c21 = somaMatrizes(p3, p4);
 
-        result = add(p5, p1);
-        result2 = subtract(result, p3);
-        c22 = subtract(result2, p7);
+        resA = somaMatrizes(p5, p1);
+        resB = subtract(resA, p3);
+        c22 = subtract(resB, p7);
 
         return joinMatriz(c11, c12, c21, c22, m);
     }
@@ -1110,23 +1073,38 @@ int main() {
     //   strassen(); // seguindo o livro, 2x2
 
 
-    std::vector<std::vector<int>>  x(2, std::vector<int>(2));
-    std::vector<std::vector<int>>  y(2, std::vector<int>(2));
-    std::vector<std::vector<int>>  z(2, std::vector<int>(2));
-
     int n,m = 2;
+
     n= pow(m,2);  //sendo obrigatoriamente, n potencia de 2
 
-    std::cout << "Matriz 1: \n";
+    std::vector<std::vector<int>>  x(n, std::vector<int>(n));
+    std::vector<std::vector<int>>  y(n, std::vector<int>(n));
+    std::vector<std::vector<int>>  z(n, std::vector<int>(n));
+
+
+    std::cout << "Matriz A: \n";
     x = inicializaMatriz(n);
+//    x= {
+//            {4, 6, 7, 2},
+//            {9, 5, 1, 0},
+//            {7, 0, 1, 4},
+//            {5, 5, 0, 7}
+//    };
+
     printMatrix(x, n);
 
-    std::cout << "Matriz 2: \n";
+    std::cout << "Matriz B: \n";
     y = inicializaMatriz(n);
+//   y= {
+//           {8, 0, 3, 2},
+//           {1, 3, 7, 0},
+//           {5, 8, 6, 1},
+//           {3, 1, 4, 0}
+//   };
     printMatrix(y, n);
 
     std::cout << "Resultado: \n";
-    z = strassen(x, y, n);
+    z = strassenDC(x, y, n);
     printMatrix(z, n);
 
 
